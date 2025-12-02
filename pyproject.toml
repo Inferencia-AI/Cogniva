@@ -16,3 +16,6 @@ dependencies = [
     "sentence-transformers>=5.1.2",
     "supabase>=2.24.0",
 ]
+
+[tool.pip]
+find-links = ["./wheels"]

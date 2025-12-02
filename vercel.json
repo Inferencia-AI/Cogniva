@@ -1,0 +1,9 @@
+{
+  "buildCommand": "npm run build",
+  "ignoreCommand": "echo skip-python",
+  "functions": {
+    "api/**/*.py": {
+      "runtime": "python3.12"
+    }
+  }
+}
