@@ -8,6 +8,9 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.19.6",
+    "@neondatabase/serverless": "^1.0.2",
+    "dotenv": "^17.2.3",
+    "firebase-admin": "^13.6.0",
     "hono": "^4.10.7"
   },
   "devDependencies": {
