@@ -3,16 +3,17 @@ import { Hono } from 'hono'
 import { sql } from './utils/neon.ts'
 import { authMiddleware } from './middlewares/auth.middleware.ts'
 import { cors } from 'hono/cors'
+import { invokeLLM } from './utils/ollama.ts'
 
 const app = new Hono()
 app.use(
   '/*',
   cors({
-    origin: '*',                     // or a specific domain: "https://your-frontend.com"
-    allowMethods: ['GET', 'POST'],   // add PUT, PATCH, DELETE if needed
-    allowHeaders: ['Content-Type', 'Authorization'],  // add Authorization, etc.
+    origin: '*',                     
+    allowMethods: ['GET', 'POST'],   
+    allowHeaders: ['Content-Type', 'Authorization'],  
     maxAge: 600,
-    credentials: false               // set true if you need cookies/auth
+    credentials: false               
   })
 )
 
@@ -29,6 +30,12 @@ app.get('/user', authMiddleware, (c) => {
   //@ts-ignore
   const user = c.get('user')
   return c.json({ message: `User,`, user })
+})
+
+app.post('/chat', async (c) => {
+  const { messages, schema } = await c.req.json()
+  const response = await invokeLLM(messages, schema)
+  return c.json(response)
 })
 
 serve({
