@@ -1,4 +1,4 @@
-import admin from "../utils/firebase.ts";
+import admin from "../utils/firebase.js";
 //@ts-ignore
 export async function authMiddleware(c, next) {
   const authHeader = c.req.header("Authorization");
