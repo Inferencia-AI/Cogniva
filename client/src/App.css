@@ -1,6 +1,27 @@
-#root, html, body {
-  padding: 0;
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+@theme {
+  --color-primary: #282C34;
+  --color-accent: #1e1e2e;
+  --color-secondary: #54565E;
+  --text-color-default: #ABB2BF;
+  --text-heading: 24px;
+  --text-body: 16px;
+  --text-caption: 12px;
+  --spacing-default: 12px;
+}
+
+html, body, #root {
+  @apply h-full flex flex-col ;
   margin: 0;
-  height: 100%;
-  width: 100%;
+  padding: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  background-color: var(--color-primary);
+  color: var(--text-color-default);
+}
+
+
+
+.button {
+  @apply bg-[var(--color-secondary)] text-[var(--text-color-default)] font-semibold py-2 px-4 rounded hover:bg-accent transition duration-300;
 }

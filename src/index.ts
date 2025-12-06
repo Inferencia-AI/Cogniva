@@ -21,15 +21,27 @@ app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
 
-app.get('/db-test', async (c) => {
-  const result = await sql`SELECT * FROM playing_with_neon;`
-  return c.json(result)
-})
 
 app.get('/user', authMiddleware, (c) => {
   //@ts-ignore
   const user = c.get('user')
   return c.json({ message: `User,`, user })
+})
+
+app.get('/chats/:uid', async (c) => {
+  const result = await sql`SELECT * FROM chats WHERE user_id = ${c.req.param('uid')}`
+  return c.json(result)
+})
+
+app.post('/save-chat', async (c) => {
+  let { userId, messages, chatId=null } = await c.req.json()
+  let result;
+  if (chatId) {
+  result = await sql`UPDATE chats SET messages = ${messages} WHERE id = ${chatId} RETURNING *`
+  } else{
+  result = await sql`INSERT INTO chats (user_id, messages) VALUES (${userId}, ${messages}) RETURNING *`
+  }
+  return c.json(result)
 })
 
 app.post('/chat', async (c) => {
