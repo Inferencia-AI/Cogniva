@@ -1,9 +1,9 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-import { sql } from './utils/neon.ts'
-import { authMiddleware } from './middlewares/auth.middleware.ts'
+import { sql } from './utils/neon'
+import { authMiddleware } from './middlewares/auth.middleware'
 import { cors } from 'hono/cors'
-import { invokeLLM } from './utils/ollama.ts'
+import { invokeLLM } from './utils/ollama'
 
 const app = new Hono()
 app.use(
