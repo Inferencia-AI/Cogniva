@@ -62,7 +62,8 @@ app.get('/scrap-url', async (c) => {
     const data = await scrapUrl(url)
     return c.json(data)
   } catch (error) {
-    return c.json({ error: error?.message }, 500)
+    //@ts-ignore
+    return c.json({ error: error?.message }, 500) 
   }
 })
 
@@ -76,6 +77,7 @@ app.get('/search', async (c) => {
     const links = await search(q)
     return c.json({ links })
   } catch (error) {
+    //@ts-ignore
     return c.json({ error: error?.message }, 500)
   }
 })
