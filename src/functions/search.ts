@@ -53,17 +53,17 @@ export async function search(query: string): Promise<string[]> {
   // });
 
   // return Array.from(new Set(links))
-    const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&skip_disambig=1`;
-  const res = await fetch(url);
-  const data = await res.json();
+  //   const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&skip_disambig=1`;
+  // const res = await fetch(url);
+  // const data = await res.json();
 
-  const links: string[] = [];
-  if (data.RelatedTopics) {
-    data.RelatedTopics.forEach((topic: any) => {
-      if (topic.FirstURL) links.push(topic.FirstURL);
-    });
-  }
-
-  return Array.from(new Set(links));
+  // const links: string[] = [];
+  // if (data.RelatedTopics) {
+  //   data.RelatedTopics.forEach((topic: any) => {
+  //     if (topic.FirstURL) links.push(topic.FirstURL);
+  //   });
+  // }
+const links = {"links":["https://duckduckgo.com/c/Chiefs_of_Army_Staff%2C_Pakistan","https://duckduckgo.com/c/Pakistani_expatriates_in_Malaysia","https://duckduckgo.com/c/Pakistani_expatriates_in_Japan","https://duckduckgo.com/c/Directors_General_of_Inter-Services_Intelligence","https://duckduckgo.com/c/Pakistan_Army_personnel","https://duckduckgo.com/c/Frontier_Force_Regiment_officers","https://duckduckgo.com/c/Field_marshals","https://duckduckgo.com/c/Spymasters","https://duckduckgo.com/c/Recipients_of_Nishan-e-Imtiaz","https://duckduckgo.com/c/National_Defence_University%2C_Pakistan_alumni","https://duckduckgo.com/c/Recipients_of_Hilal-i-Imtiaz","https://duckduckgo.com/c/Pakistani_generals"]}
+  return links.links;
 }
 
