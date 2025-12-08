@@ -15,8 +15,7 @@
     "dotenv": "^17.2.3",
     "extract-json-from-string": "^1.0.1",
     "firebase-admin": "^13.6.0",
-    "hono": "^4.10.7",
-    "puppeteer": "^24.32.1"
+    "hono": "^4.10.7"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
