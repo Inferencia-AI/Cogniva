@@ -10,7 +10,23 @@ export async function scrapUrl(url: string): Promise<{
     assets: string[];
 }> {
     try {
-        const { data } = await axios.get(url);
+        const decodedUrl = decodeURIComponent(url);
+
+        // Normalize protocol-relative or protocol-missing URLs so axios can resolve them
+        const normalizedUrl = (() => {
+            if (decodedUrl.startsWith('//')) return `https:${decodedUrl}`;
+            if (/^https?:\/\//i.test(decodedUrl)) return decodedUrl;
+            return `https://${decodedUrl}`;
+        })();
+
+        // Validate URL early to surface a clear error
+        try {
+            new URL(normalizedUrl);
+        } catch (err) {
+            throw new Error(`Invalid URL: ${decodedUrl}`);
+        }
+
+        const { data } = await axios.get(normalizedUrl);
         const $ = load(data);
 
         const html = $.html();

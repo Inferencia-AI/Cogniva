@@ -12,5 +12,18 @@ export async function search(query: string): Promise<string[]> {
     });
   }
 
-  return links.slice(0, 5)
+  if (links.length === 0) {
+    // Fallback to scraping HTML results if no links found in JSON response
+    const htmlUrl = `https://duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
+    const htmlRes = await fetch(htmlUrl);
+    const html = await htmlRes.text();
+    const $ = load(html);
+
+    $('a.result__a').each((_, element) => {
+      const link = $(element).attr('href');
+      if (link) links.push(link);
+    });
+  }
+
+  return links
 }
