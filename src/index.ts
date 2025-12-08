@@ -4,6 +4,8 @@ import { sql } from './utils/neon.js'
 import { authMiddleware } from './middlewares/auth.middleware.js'
 import { cors } from 'hono/cors'
 import { invokeLLM } from './utils/ollama.js'
+import { search } from './functions/search.ts'
+
 
 const app = new Hono()
 app.use(
@@ -64,6 +66,19 @@ app.get('/scrap-url', async (c) => {
   }
 })
 
+
+app.get('/search', async (c) => {
+  const q = c.req.query('q')
+  if (!q) {
+    return c.json({ error: 'q query parameter is required' }, 400)
+  }
+  try {
+    const links = await search(q)
+    return c.json({ links })
+  } catch (error) {
+    return c.json({ error: error?.message }, 500)
+  }
+})
 
 serve({
   fetch: app.fetch,
