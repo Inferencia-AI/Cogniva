@@ -52,5 +52,5 @@ export async function search(query: string): Promise<string[]> {
     }
   });
 
-  return Array.from(new Set(links)).slice(0, 5);
+  return Array.from(new Set(links))
 }
