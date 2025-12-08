@@ -64,6 +64,6 @@ export async function search(query: string): Promise<string[]> {
     });
   }
 
-  return links
+  return Array.from(new Set(links));
 }
 
