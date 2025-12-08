@@ -4,7 +4,7 @@ import { sql } from './utils/neon.js'
 import { authMiddleware } from './middlewares/auth.middleware.js'
 import { cors } from 'hono/cors'
 import { invokeLLM } from './utils/ollama.js'
-import { search } from './functions/search.ts'
+import { search } from './functions/search.js'
 
 
 const app = new Hono()
