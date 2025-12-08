@@ -10,6 +10,8 @@
     "@hono/node-server": "^1.19.6",
     "@langchain/ollama": "^1.0.3",
     "@neondatabase/serverless": "^1.0.2",
+    "axios": "^1.13.2",
+    "cheerio": "^1.1.2",
     "dotenv": "^17.2.3",
     "extract-json-from-string": "^1.0.1",
     "firebase-admin": "^13.6.0",

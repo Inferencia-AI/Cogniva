@@ -50,6 +50,21 @@ app.post('/chat', async (c) => {
   return c.json(response)
 })
 
+app.get('/scrap-url', async (c) => {
+  const url = c.req.query('url')
+  if (!url) {
+    return c.json({ error: 'URL query parameter is required' }, 400)
+  }
+  try {
+    const { scrapUrl } = await import('./functions/scrapUrl.js')
+    const data = await scrapUrl(url)
+    return c.json(data)
+  } catch (error) {
+    return c.json({ error: error?.message }, 500)
+  }
+})
+
+
 serve({
   fetch: app.fetch,
   port: 3000
