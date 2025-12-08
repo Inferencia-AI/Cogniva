@@ -54,3 +54,4 @@ export async function search(query: string): Promise<string[]> {
 
   return Array.from(new Set(links))
 }
+
