@@ -19,7 +19,8 @@
     "duck-duck-scrape": "^2.2.7",
     "extract-json-from-string": "^1.0.1",
     "firebase-admin": "^13.6.0",
-    "hono": "^4.10.7"
+    "hono": "^4.10.7",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
