@@ -2,7 +2,7 @@ import axios from "axios";
 import { load } from "cheerio";
 
 export async function search(query: string) {
-  const url = `https://search.eng-sharjeel-baig.workers.dev/?q=${encodeURIComponent(query)}`;
+  const url = `https://duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
   const { data: html } = await axios.get(url, {
     headers: {
       "User-Agent":
@@ -24,7 +24,11 @@ export async function search(query: string) {
     }
   });
 
-  return links;
+  // return links;
+  if (links.length === 0) {
+    return [`https://duckduckgo.com/html/?q=${encodeURIComponent(query)}`]
+  }
+  return links
 }
 
 
