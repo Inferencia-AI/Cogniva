@@ -7,7 +7,7 @@ const client = tavily({
 
 export async function search(query: string): Promise<string[]> {
   const res = await client.search(query, {
-    includeAnswer: "advanced",
+    includeAnswer: false,
     maxResults: 10
   });
 
