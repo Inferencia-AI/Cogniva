@@ -1,31 +1,30 @@
-import { DuckDuckGoSearch } from "@langchain/community/tools/duckduckgo_search";
+import axios from "axios";
+import { load } from "cheerio";
 
-const tool = new DuckDuckGoSearch({ maxResults: 1 });
+export async function search(query: string) {
+  const url = `https://duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
+  const { data: html } = await axios.get(url, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+  });
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+  const $ = load(html);
+  const links: string[] = [];
 
-export async function search(query="hi" as any): Promise<any> {
-	const maxAttempts = 3;
+  $("a.result__a").each((_, el) => {
+    const href = $(el).attr("href");
+    if (href) {
+      try {
+        const urlObj = new URL(href.startsWith("//") ? "https:" + href : href);
+        const uddg = urlObj.searchParams.get("uddg");
+        if (uddg) links.push(decodeURIComponent(uddg));
+      } catch {}
+    }
+  });
 
-	for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-		try {
-			const searchResults = await tool.invoke(query);
-      query?.searchParams.delete("ss_mkt");  // remove the parameter
-			return searchResults;
-		} catch (error) {
-			const message = error instanceof Error ? error.message : String(error);
-			const isRateLimited = message.toLowerCase().includes("anomaly") || message.toLowerCase().includes("too quickly");
-			const shouldRetry = isRateLimited && attempt < maxAttempts;
-
-			if (!shouldRetry) {
-				throw error;
-			}
-
-			const backoffMs = attempt * 500 + Math.floor(Math.random() * 200);
-			await sleep(backoffMs);
-      
-		}
-	}
-
-	throw new Error("DuckDuckGo search failed after retries");
+  return links;
 }
+
+
