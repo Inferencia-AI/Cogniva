@@ -74,13 +74,7 @@ app.get('/search', async (c) => {
     return c.json({ error: 'q query parameter is required' }, 400)
   }
   try {
-    const schema = { "refinedQuery": "string" }
-    const query = invokeLLM([
-      { role: 'system', content: 'Your task is to extract the search query from the user input. Respond only with the refined search query without any additional text, following this schema: ' + JSON.stringify(schema) },
-      { role: 'human', content: `Extract the search query from this input: "${q}"` }
-    ], schema)
-    const refinedQuery = (await query).refinedQuery
-    const links = await search(refinedQuery)
+    const links = await search(q)
     return c.json({ links })
   } catch (error) {
     //@ts-ignore
