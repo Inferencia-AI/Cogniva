@@ -1,4 +1,4 @@
-import tvly from "../utils/tavily.ts";
+import tvly from "../utils/tavily.js";
 
 export async function search(query: string): Promise<any> {
   const response = await tvly.search(query, {includeAnswer:true, includeImages: true});
