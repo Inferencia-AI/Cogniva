@@ -1,22 +1,31 @@
-// npm i @tavily/core
-import { tavily } from "@tavily/core";
+import { DuckDuckGoSearch } from "@langchain/community/tools/duckduckgo_search";
 
-const client = tavily({
-  apiKey: "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"
-});
+const tool = new DuckDuckGoSearch({ maxResults: 1 });
 
-export async function search(query: string): Promise<string[]> {
-  const res = await client.search(query, {
-    includeAnswer: false,
-    maxResults: 10
-  });
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  // Tavily returns: { results: [ { url, title, content }, ... ] }
-  const links = res.results
-    .map(r => r.url)
-    .filter(url => typeof url === "string");
+export async function search(query="hi" as any): Promise<any> {
+	const maxAttempts = 3;
 
-  return links;
+	for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+		try {
+			const searchResults = await tool.invoke(query);
+      query?.searchParams.delete("ss_mkt");  // remove the parameter
+			return searchResults;
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error);
+			const isRateLimited = message.toLowerCase().includes("anomaly") || message.toLowerCase().includes("too quickly");
+			const shouldRetry = isRateLimited && attempt < maxAttempts;
+
+			if (!shouldRetry) {
+				throw error;
+			}
+
+			const backoffMs = attempt * 500 + Math.floor(Math.random() * 200);
+			await sleep(backoffMs);
+      
+		}
+	}
+
+	throw new Error("DuckDuckGo search failed after retries");
 }
-
-
