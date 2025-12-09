@@ -74,8 +74,8 @@ app.get('/search', async (c) => {
     return c.json({ error: 'q query parameter is required' }, 400)
   }
   try {
-    const links = await search(q)
-    return c.json({ links })
+    const { links, instantAnswer } = await search(q)
+    return c.json({ links, instantAnswer })
   } catch (error) {
     //@ts-ignore
     return c.json({ error: error?.message }, 500)
