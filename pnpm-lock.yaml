@@ -29,6 +29,9 @@ importers:
       axios:
         specifier: ^1.13.2
         version: 1.13.2(debug@4.4.3)
+      browser:
+        specifier: ^0.2.6
+        version: 0.2.6
       cheerio:
         specifier: ^1.1.2
         version: 1.1.2
@@ -901,6 +904,9 @@ packages:
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
 
+  browser@0.2.6:
+    resolution: {integrity: sha512-U6FjD1MaSio5jnSbGj7nrMzdy4mHmXe6RZ4/5Oa9CWIEa6iWCwnhJPfbZXGwaOOySqRF10v8BIQ4zYJyhBg97g==}
+
   buffer-equal-constant-time@1.0.1:
     resolution: {integrity: sha512-zRpUiDwd/xk6ADqPMATG8vc9VPrkck7T07OIx0gnjmJAnHnTVXNQG3vfvWNuiZIkwu9KrKdA1iJKfsfTVxE6NA==}
 
@@ -1291,6 +1297,9 @@ packages:
     resolution: {integrity: sha512-MT/xP0CrubFRNLNKvxJ2BYfy53Zkm++5bX9dtuPbqAeQpTVe0MQTFhao8+Cp//EmJp244xt6Drw/GVEGCUj40g==}
     engines: {node: '>=12', npm: '>=6'}
 
+  junjo@0.2.8:
+    resolution: {integrity: sha512-aekTv1Qq5BpOSXWlJWgfTsUKsu1gg/+ZluD+9aJfJcOP/BiywM+8owTX/DIZTp9O7V7YOybOXiIftz35JyjjuA==}
+
   jwa@1.4.2:
     resolution: {integrity: sha512-eeH5JO+21J78qMvTIDdBXidBd6nG2kZjg5Ohz/1fpa28Z4CcsWUzJ1ZZyFq/3z3N17aZy+ZuBoHljASbL1WfOw==}
 
@@ -1642,6 +1651,9 @@ packages:
     resolution: {integrity: sha512-resvxdc6Mgb7YEThw6G6bExlXKkv6+YbuzGg9xuXxSgxJF7Ozs+o8Y9+2R3sArdWdW8nOokoQb1yrpFB0pQK2g==}
     engines: {node: '>=14'}
 
+  termcolor@0.2.0:
+    resolution: {integrity: sha512-BJ/FFGl0cQAyYYmUurkqQUJA9RyD2PFt9YNd24nlt7HkeuZqUmHL86ELvaY6JY/TLUvmxzJY9/fHHk3jFibUSg==}
+
   token-types@4.2.1:
     resolution: {integrity: sha512-6udB24Q737UD/SDsKAHI9FCRP7Bqc9D/MQUV02ORQg5iskjtLJlZJNdN4kKtcdtwCeWIwIHDGaUsTsCCAa8sFQ==}
     engines: {node: '>=10'}
@@ -1665,6 +1677,9 @@ packages:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  u2r@0.1.3:
+    resolution: {integrity: sha512-OqMjkw3si8wJyuK6RzBQCuJjbDmCm7LEBoQEMrZg1hUtwXBhZxZzEnxUF/Mky3zesSPfwRud5xbvoH7lzoiS3Q==}
 
   uglify-js@3.19.3:
     resolution: {integrity: sha512-v3Xu+yuwBXisp6QYTcH4UbH+xYJXqnq2m/LtQVWKWzYc1iehYnLixoQDN9FH6/j9/oybfd6W9Ghwkl8+UMKTKQ==}
@@ -2354,6 +2369,13 @@ snapshots:
 
   boolbase@1.0.0: {}
 
+  browser@0.2.6:
+    dependencies:
+      cheerio: 1.1.2
+      junjo: 0.2.8
+      termcolor: 0.2.0
+      u2r: 0.1.3
+
   buffer-equal-constant-time@1.0.1: {}
 
   buffer@6.0.3:
@@ -2878,6 +2900,8 @@ snapshots:
       ms: 2.1.3
       semver: 7.7.3
 
+  junjo@0.2.8: {}
+
   jwa@1.4.2:
     dependencies:
       buffer-equal-constant-time: 1.0.1
@@ -3228,6 +3252,8 @@ snapshots:
       - supports-color
     optional: true
 
+  termcolor@0.2.0: {}
+
   token-types@4.2.1:
     dependencies:
       '@tokenizer/token': 0.3.0
@@ -3252,6 +3278,8 @@ snapshots:
       fsevents: 2.3.3
 
   typescript@5.9.3: {}
+
+  u2r@0.1.3: {}
 
   uglify-js@3.19.3:
     optional: true
