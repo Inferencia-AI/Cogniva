@@ -5,6 +5,8 @@ import { authMiddleware } from './middlewares/auth.middleware.js'
 import { cors } from 'hono/cors'
 import { invokeLLM } from './utils/ollama.js'
 import { search } from './functions/search.js'
+import { uploadBase64Image } from './utils/vercelCloud.js'
+import axios from 'axios'
 
 
 const app = new Hono()
@@ -119,6 +121,26 @@ app.post('/summarize-html', async (c) => {
   }
 })
 
+app.post('/upload-image', async (c) => {
+  const { dataUri, fileName } = await c.req.json()
+  if (!dataUri || !fileName) {
+    return c.json({ error: 'dataUri and fileName are required' }, 400)
+  }
+  try {
+    // const { uploadBase64Image } = await import('./utils/vercelCloud.js')
+    const result = await uploadBase64Image(dataUri, fileName)
+    return c.json({ url: result.url })
+  } catch (error) {
+    //@ts-ignore
+    return c.json({ error: error?.message }, 500)
+  }
+})
+
+app.post('/web-answer', async (c) => {
+  const { question } = await c.req.json()
+  const res = await axios.post('https://inferencia-search.vercel.app/api/answer-question', { question })
+  return c.json(res.data)
+})
 
 serve({
   fetch: app.fetch,
