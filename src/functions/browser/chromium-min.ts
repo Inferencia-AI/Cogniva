@@ -1,7 +1,18 @@
 import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium-min';
 
 export async function getTitle(): Promise<string | null> {
-    const browser = await puppeteer.launch();
+    // Optional chromium configuration (cast to any to avoid type errors if needed)
+    (chromium as any).setHeadlessMode = true; // "new" headless mode is default; set to false if needed
+    (chromium as any).setGraphicsMode = false; // disable webgl (true by default)
+
+    const browser = await puppeteer.launch({
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: true,
+    });
+
     const page = await browser.newPage();
 
     try {

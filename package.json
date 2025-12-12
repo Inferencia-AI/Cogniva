@@ -12,6 +12,8 @@
     "@langchain/core": "^1.1.4",
     "@langchain/ollama": "^1.0.3",
     "@neondatabase/serverless": "^1.0.2",
+    "@sparticuz/chromium": "^106.0.2",
+    "@sparticuz/chromium-min": "119.0.0",
     "@tavily/core": "^0.6.0",
     "@vercel/blob": "^2.0.0",
     "axios": "^1.13.2",
