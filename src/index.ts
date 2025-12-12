@@ -139,10 +139,16 @@ app.post('/upload-image', async (c) => {
 app.post('/web-answer', async (c) => {
   const { question } = await c.req.json()
   const res = await axios.post('https://inferencia-search.vercel.app/api/answer-question', { question })
-  const oneAnswer = await invokeLLM([{ role: 'system', content: 'Your job is to extract a concise answer of this question: ' + question + ' from the following json data: ' + JSON.stringify(res.data) }, { role: 'human', content: 'Provide a concise answer based on the above data, if you cannot find an answer, try to answer based on your knowledge.' }])
+  const oneAnswer = await invokeLLM([{ role: 'system', content: 'Your job is to extract a concise answer of this question: ' + question + ' from the following json data: ' + JSON.stringify(res.data) }, { role: 'human', content: 'Provide a concise answer based on the above data, if you cannot find an answer just output "toolCall(Tavilly)" and nothing' }])
+  if (oneAnswer[0]?.response?.toLowerCase() === 'toolCall(Tavilly)'?.toLowerCase()) {
+    const tavilySearch = await search(question)
+    const finalResponse = { answer: tavilySearch.answer, image: tavilySearch.images[0]?.url, ...res.data }
+    return c.json(finalResponse)
+  } else {
   // return c.json(res.data)
   const finalResponse = { answer: oneAnswer[0]?.response, ...res.data }
   return c.json(finalResponse)
+  }
 })
 
 serve({
