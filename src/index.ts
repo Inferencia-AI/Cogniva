@@ -145,6 +145,12 @@ app.post('/web-answer', async (c) => {
   return c.json(finalResponse)
 })
 
+app.get('/test-puppeteer', async (c) => {
+  const { getTitle } = await import('./functions/browser/puppeteer.js')
+  const title =  await getTitle()
+  return c.json({ title })
+})
+
 serve({
   fetch: app.fetch,
   port: 3000
