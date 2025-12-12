@@ -141,7 +141,7 @@ app.post('/web-answer', async (c) => {
   const res = await axios.post('https://inferencia-search.vercel.app/api/answer-question', { question })
   const oneAnswer = await invokeLLM([{ role: 'system', content: 'Your job is to extract a concise answer of this question: ' + question + ' from the following json data: ' + JSON.stringify(res.data) }, { role: 'human', content: 'Provide a concise answer based on the above data.' }])
   // return c.json(res.data)
-  const finalResponse = { answer: oneAnswer[0], ...res.data }
+  const finalResponse = { answer: oneAnswer[0]?.response, ...res.data }
   return c.json(finalResponse)
 })
 
