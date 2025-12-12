@@ -146,7 +146,7 @@ app.post('/web-answer', async (c) => {
 })
 
 app.get('/test-puppeteer', async (c) => {
-  const { getTitle } = await import('./functions/browser/chromium-min.ts')
+  const { getTitle } = await import('./functions/browser/chromium-min.js')
   const title =  await getTitle()
   return c.json({ title })
 })
