@@ -136,6 +136,114 @@ app.post('/upload-image', async (c) => {
   }
 })
 
+// =============================================================================
+// Separate Web Answer APIs - Each returns one type of result
+// =============================================================================
+
+const PYTHON_API_BASE = 'https://inferencia-search.vercel.app'
+
+app.post('/wikipedia-answer', async (c) => {
+  const { question } = await c.req.json()
+  if (!question) {
+    return c.json({ error: 'question is required' }, 400)
+  }
+  try {
+    const res = await axios.post(`${PYTHON_API_BASE}/api/wikipedia-answer`, { question })
+    const { wikipedia_answer } = res.data || {}
+    
+    if (wikipedia_answer?.summary) {
+      const summarized = await invokeLLM([
+        { role: 'system', content: 'Summarize the following Wikipedia result in 3 concise sentences. Keep it factual and brief.' },
+        { role: 'human', content: wikipedia_answer.summary }
+      ])
+      return c.json({
+        wikipedia_answer: {
+          ...wikipedia_answer,
+          summary: summarized[0]?.response || wikipedia_answer.summary
+        }
+      })
+    }
+    return c.json({ wikipedia_answer })
+  } catch (error) {
+    //@ts-ignore
+    return c.json({ error: error?.message }, 500)
+  }
+})
+
+app.post('/duckduckgo-answer', async (c) => {
+  const { question } = await c.req.json()
+  if (!question) {
+    return c.json({ error: 'question is required' }, 400)
+  }
+  try {
+    const res = await axios.post(`${PYTHON_API_BASE}/api/duckduckgo-answer`, { question })
+    const { duckduckgo_answer } = res.data || {}
+    
+    if (duckduckgo_answer?.answer) {
+      const summarized = await invokeLLM([
+        { role: 'system', content: 'Summarize the following DuckDuckGo result in 3 concise sentences. Keep it factual and brief.' },
+        { role: 'human', content: duckduckgo_answer.answer }
+      ])
+      return c.json({
+        duckduckgo_answer: {
+          ...duckduckgo_answer,
+          answer: summarized[0]?.response || duckduckgo_answer.answer
+        }
+      })
+    }
+    return c.json({ duckduckgo_answer })
+  } catch (error) {
+    //@ts-ignore
+    return c.json({ error: error?.message }, 500)
+  }
+})
+
+app.post('/promoted-answer', async (c) => {
+  const { question } = await c.req.json()
+  if (!question) {
+    return c.json({ error: 'question is required' }, 400)
+  }
+  try {
+    const res = await axios.post(`${PYTHON_API_BASE}/api/promoted-answer`, { question })
+    return c.json(res.data)
+  } catch (error) {
+    //@ts-ignore
+    return c.json({ error: error?.message }, 500)
+  }
+})
+
+app.post('/others-answer', async (c) => {
+  const { question } = await c.req.json()
+  if (!question) {
+    return c.json({ error: 'question is required' }, 400)
+  }
+  try {
+    const res = await axios.post(`${PYTHON_API_BASE}/api/others-answer`, { question })
+    return c.json(res.data)
+  } catch (error) {
+    //@ts-ignore
+    return c.json({ error: error?.message }, 500)
+  }
+})
+
+app.post('/articles-answer', async (c) => {
+  const { question } = await c.req.json()
+  if (!question) {
+    return c.json({ error: 'question is required' }, 400)
+  }
+  try {
+    const res = await axios.post(`${PYTHON_API_BASE}/api/articles-answer`, { question })
+    return c.json(res.data)
+  } catch (error) {
+    //@ts-ignore
+    return c.json({ error: error?.message }, 500)
+  }
+})
+
+// =============================================================================
+// Legacy Combined Web Answer API (kept for backward compatibility)
+// =============================================================================
+
 app.post('/web-answer', async (c) => {
   const { question } = await c.req.json()
   const res = await axios.post('https://inferencia-search.vercel.app/api/answer-question', { question })
