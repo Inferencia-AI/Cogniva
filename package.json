@@ -26,7 +26,8 @@
     "hono": "^4.10.7",
     "node-fetch": "^3.3.2",
     "playwright": "^1.57.0",
-    "puppeteer-core": "^24.33.0"
+    "puppeteer-core": "^24.33.0",
+    "query-sense": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",

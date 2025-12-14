@@ -68,6 +68,9 @@ importers:
       puppeteer-core:
         specifier: ^24.33.0
         version: 24.33.0
+      query-sense:
+        specifier: ^1.0.0
+        version: 1.0.0
     devDependencies:
       '@types/node':
         specifier: ^20.11.17
@@ -1777,6 +1780,9 @@ packages:
   puppeteer-core@24.33.0:
     resolution: {integrity: sha512-tPTxVg+Qdj/8av4cy6szv3GlhxeOoNhiiMZ955fjxQyvPQE/6DjCa6ZyF/x0WJrlgBZtaLSP8TQgJb7FdLDXXA==}
     engines: {node: '>=18'}
+
+  query-sense@1.0.0:
+    resolution: {integrity: sha512-Y+YrVkDh/6hBPPADHdF0zFBl+UtYuo6W0MxbaNR12tswM9h+oKWKL4rzBVrh3AsWQbxt0b9VYv4ynS4biPk22g==}
 
   querystringify@2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
@@ -3656,6 +3662,8 @@ snapshots:
       - react-native-b4a
       - supports-color
       - utf-8-validate
+
+  query-sense@1.0.0: {}
 
   querystringify@2.2.0: {}
 

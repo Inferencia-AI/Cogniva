@@ -6,6 +6,7 @@ import { cors } from 'hono/cors'
 import { invokeLLM } from './utils/ollama.js'
 import { search } from './functions/search.js'
 import { uploadBase64Image } from './utils/vercelCloud.js'
+import { searchUserNotes, formatNoteSearchResponse } from './utils/noteSearch.js'
 import axios from 'axios'
 
 
@@ -90,6 +91,46 @@ app.post('/chat', async (c) => {
   const { messages, schema } = await c.req.json()
   const response = await invokeLLM(messages, schema)
   return c.json(response)
+})
+
+// =============================================================================
+// Notes Search API - Semantic search through user's notes
+// =============================================================================
+
+app.post('/search-notes', async (c) => {
+  const { userId, query } = await c.req.json()
+  
+  if (!userId || !query) {
+    return c.json({ error: 'userId and query are required' }, 400)
+  }
+  
+  try {
+    const noteResults = await searchUserNotes(userId, query, {
+      topK: 3,
+      threshold: 0.75,
+    })
+    
+    const formattedNotes = formatNoteSearchResponse(noteResults)
+    
+    if (!formattedNotes?.length) {
+      return c.json({ notes: [] })
+    }
+    
+    return c.json({
+      type: 'notes',
+      topic: 'From Your Notes',
+      notes: formattedNotes,
+      sources: formattedNotes.map(note => ({
+        title: note.title,
+        url: `note://${note.noteId}`,
+        snippet: note.body?.slice(0, 150) || '',
+        noteId: note.noteId,
+      })),
+    })
+  } catch (error) {
+    console.error('Error searching notes:', error)
+    return c.json({ notes: [] })
+  }
 })
 
 app.get('/scrap-url', async (c) => {
