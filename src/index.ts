@@ -160,7 +160,7 @@ app.post('/search-notes', async (c) => {
   try {
     const noteResults = await searchUserNotes(userId, query, {
       topK: 3,
-      threshold: 0.75,
+      threshold: 0.59,
     })
     
     const formattedNotes = formatNoteSearchResponse(noteResults)
