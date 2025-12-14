@@ -1,7 +1,7 @@
 import mammoth from 'mammoth';
 import { JSDOM } from 'jsdom';
 import TurndownService from 'turndown';
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { extractText } from 'unpdf';
 
 // =============================================================================
 // Document Parser - Convert PDF, DOCX, RTF, and MD files to Markdown
@@ -87,24 +87,21 @@ function getTitleFromFileName(fileName: string): string {
 
 async function parsePdfToMarkdown(buffer: Buffer): Promise<string> {
   try {
+    // unpdf requires Uint8Array, not Buffer
     const uint8Array = new Uint8Array(buffer);
-    const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise;
-    const textParts: string[] = [];
+    const { text } = await extractText(uint8Array);
+    
+    // unpdf returns text as string[] (array of pages)
+    // Join pages and clean up the text
+    const fullText = Array.isArray(text) ? text.join('\n') : text;
+    
+    const cleanedText = fullText
+      .split('\n')
+      .map((line: string) => line.trim())
+      .filter((line: string) => line.length > 0)
+      .join('\n\n');
 
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items
-        .map((item: any) => item.str)
-        .join(' ');
-      
-      if (pageText.trim()) {
-        textParts.push(pageText.trim());
-      }
-    }
-
-    // Format as markdown with page breaks
-    return textParts.join('\n\n---\n\n');
+    return cleanedText || 'No text content found in PDF.';
   } catch (error) {
     console.error('Error parsing PDF:', error);
     throw new Error('Failed to parse PDF file');
