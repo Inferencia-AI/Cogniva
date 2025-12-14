@@ -7,6 +7,7 @@ import { invokeLLM } from './utils/ollama.js'
 import { search } from './functions/search.js'
 import { uploadBase64Image } from './utils/vercelCloud.js'
 import { searchUserNotes, formatNoteSearchResponse } from './utils/noteSearch.js'
+import { validateFile, parseDocument } from './utils/documentParser.js'
 import axios from 'axios'
 
 
@@ -85,6 +86,58 @@ app.delete('/notes/:id', async (c) => {
   const id = c.req.param('id')
   await sql`DELETE FROM notes WHERE id = ${id}`
   return c.json({ success: true })
+})
+
+// =============================================================================
+// Document Upload API - Upload and convert documents to notes
+// =============================================================================
+
+app.post('/upload-document', async (c) => {
+  try {
+    const formData = await c.req.formData()
+    const file = formData.get('file') as File | null
+    const userId = formData.get('userId') as string | null
+
+    if (!file || !userId) {
+      return c.json({ error: 'file and userId are required' }, 400)
+    }
+
+    // Validate file
+    const validationError = validateFile(file.name, file.size, file.type)
+    if (validationError) {
+      return c.json(validationError, 400)
+    }
+
+    // Convert file to buffer
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+
+    // Parse document to markdown
+    const parsedDoc = await parseDocument(buffer, file.name, file.type)
+
+    // Create note with the parsed content
+    const result = await sql`
+      INSERT INTO notes (user_id, title, body) 
+      VALUES (${userId}, ${parsedDoc.title}, ${parsedDoc.markdown}) 
+      RETURNING *
+    `
+
+    return c.json({
+      success: true,
+      note: result[0],
+      metadata: {
+        originalFileName: parsedDoc.originalFileName,
+        fileSize: parsedDoc.fileSize,
+        mimeType: parsedDoc.mimeType,
+      },
+    })
+  } catch (error) {
+    console.error('Error uploading document:', error)
+    return c.json(
+      { error: error instanceof Error ? error.message : 'Failed to process document', code: 'PARSE_ERROR' },
+      500
+    )
+  }
 })
 
 app.post('/chat', async (c) => {
