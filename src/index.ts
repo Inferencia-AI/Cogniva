@@ -14,7 +14,7 @@ app.use(
   '/*',
   cors({
     origin: '*',                     
-    allowMethods: ['GET', 'POST'],   
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],   
     allowHeaders: ['Content-Type', 'Authorization'],  
     maxAge: 600,
     credentials: false               
@@ -37,6 +37,12 @@ app.get('/chats/:uid', async (c) => {
   return c.json(result)
 })
 
+app.delete('/chats/:id', async (c) => {
+  const id = c.req.param('id')
+  await sql`DELETE FROM chats WHERE id = ${id}`
+  return c.json({ success: true })
+})
+
 app.post('/save-chat', async (c) => {
   let { userId, messages, chatId=null } = await c.req.json()
   let result;
@@ -46,6 +52,38 @@ app.post('/save-chat', async (c) => {
   result = await sql`INSERT INTO chats (user_id, messages) VALUES (${userId}, ${messages}) RETURNING *`
   }
   return c.json(result)
+})
+
+// =============================================================================
+// Notes API - CRUD operations for user notes
+// =============================================================================
+
+app.get('/notes/:uid', async (c) => {
+  const uid = c.req.param('uid')
+  const result = await sql`SELECT * FROM notes WHERE user_id = ${uid} ORDER BY id DESC`
+  return c.json(result)
+})
+
+app.post('/notes', async (c) => {
+  const { userId, title, body } = await c.req.json()
+  if (!userId || !title) {
+    return c.json({ error: 'userId and title are required' }, 400)
+  }
+  const result = await sql`INSERT INTO notes (user_id, title, body) VALUES (${userId}, ${title}, ${body || ''}) RETURNING *`
+  return c.json(result[0])
+})
+
+app.put('/notes/:id', async (c) => {
+  const id = c.req.param('id')
+  const { title, body } = await c.req.json()
+  const result = await sql`UPDATE notes SET title = ${title}, body = ${body} WHERE id = ${id} RETURNING *`
+  return c.json(result[0])
+})
+
+app.delete('/notes/:id', async (c) => {
+  const id = c.req.param('id')
+  await sql`DELETE FROM notes WHERE id = ${id}`
+  return c.json({ success: true })
 })
 
 app.post('/chat', async (c) => {
