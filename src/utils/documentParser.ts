@@ -1,7 +1,7 @@
 import mammoth from 'mammoth';
 import { JSDOM } from 'jsdom';
-import TurndownService from 'turndown';
 import { extractText } from 'unpdf';
+import { marked } from 'marked';
 
 // =============================================================================
 // Document Parser - Convert PDF, DOCX, RTF, and MD files to Markdown
@@ -23,7 +23,7 @@ const ALLOWED_EXTENSIONS = ['.pdf', '.rtf', '.docx', '.md'];
 
 export interface ParsedDocument {
   title: string;
-  markdown: string;
+  html: string;
   originalFileName: string;
   fileSize: number;
   mimeType: string;
@@ -82,10 +82,10 @@ function getTitleFromFileName(fileName: string): string {
 }
 
 // -----------------------------------------------------------------------------
-// Parse PDF to Markdown
+// Parse PDF to HTML
 // -----------------------------------------------------------------------------
 
-async function parsePdfToMarkdown(buffer: Buffer): Promise<string> {
+async function parsePdfToHtml(buffer: Buffer): Promise<string> {
   try {
     // unpdf requires Uint8Array, not Buffer
     const uint8Array = new Uint8Array(buffer);
@@ -95,13 +95,15 @@ async function parsePdfToMarkdown(buffer: Buffer): Promise<string> {
     // Join pages and clean up the text
     const fullText = Array.isArray(text) ? text.join('\n') : text;
     
-    const cleanedText = fullText
+    // Convert text to HTML paragraphs
+    const paragraphs = fullText
       .split('\n')
       .map((line: string) => line.trim())
       .filter((line: string) => line.length > 0)
-      .join('\n\n');
+      .map((line: string) => `<p>${line}</p>`)
+      .join('\n');
 
-    return cleanedText || 'No text content found in PDF.';
+    return paragraphs || '<p>No text content found in PDF.</p>';
   } catch (error) {
     console.error('Error parsing PDF:', error);
     throw new Error('Failed to parse PDF file');
@@ -109,27 +111,14 @@ async function parsePdfToMarkdown(buffer: Buffer): Promise<string> {
 }
 
 // -----------------------------------------------------------------------------
-// Parse DOCX to Markdown
+// Parse DOCX to HTML
 // -----------------------------------------------------------------------------
 
-async function parseDocxToMarkdown(buffer: Buffer): Promise<string> {
+async function parseDocxToHtml(buffer: Buffer): Promise<string> {
   try {
     const result = await mammoth.convertToHtml({ buffer });
-    const html = result.value;
-
-    // Convert HTML to Markdown using Turndown
-    const turndownService = new TurndownService({
-      headingStyle: 'atx',
-      codeBlockStyle: 'fenced',
-    });
-
-    // Add rules for better conversion
-    turndownService.addRule('strikethrough', {
-      filter: ['del', 's'],
-      replacement: (content) => `~~${content}~~`,
-    });
-
-    return turndownService.turndown(html);
+    // mammoth already returns clean HTML, just return it directly
+    return result.value;
   } catch (error) {
     console.error('Error parsing DOCX:', error);
     throw new Error('Failed to parse DOCX file');
@@ -137,10 +126,10 @@ async function parseDocxToMarkdown(buffer: Buffer): Promise<string> {
 }
 
 // -----------------------------------------------------------------------------
-// Parse RTF to Markdown (basic support)
+// Parse RTF to HTML (basic support)
 // -----------------------------------------------------------------------------
 
-async function parseRtfToMarkdown(buffer: Buffer): Promise<string> {
+async function parseRtfToHtml(buffer: Buffer): Promise<string> {
   try {
     const rtfContent = buffer.toString('utf-8');
     
@@ -173,7 +162,14 @@ async function parseRtfToMarkdown(buffer: Buffer): Promise<string> {
       .replace(/\n{3,}/g, '\n\n')
       .trim();
 
-    return text;
+    // Convert to HTML paragraphs
+    const paragraphs = text
+      .split('\n\n')
+      .filter((p: string) => p.trim().length > 0)
+      .map((p: string) => `<p>${p.trim()}</p>`)
+      .join('\n');
+
+    return paragraphs;
   } catch (error) {
     console.error('Error parsing RTF:', error);
     throw new Error('Failed to parse RTF file');
@@ -181,11 +177,13 @@ async function parseRtfToMarkdown(buffer: Buffer): Promise<string> {
 }
 
 // -----------------------------------------------------------------------------
-// Parse Markdown (just return as-is with minimal cleaning)
+// Parse Markdown to HTML
 // -----------------------------------------------------------------------------
 
-async function parseMarkdownToMarkdown(buffer: Buffer): Promise<string> {
-  return buffer.toString('utf-8').trim();
+async function parseMarkdownToHtml(buffer: Buffer): Promise<string> {
+  const markdown = buffer.toString('utf-8').trim();
+  // Convert markdown to HTML using marked
+  return await marked(markdown);
 }
 
 // -----------------------------------------------------------------------------
@@ -198,20 +196,20 @@ export async function parseDocument(
   mimeType: string
 ): Promise<ParsedDocument> {
   const extension = getFileExtension(fileName);
-  let markdown: string;
+  let html: string;
 
   switch (extension) {
     case '.pdf':
-      markdown = await parsePdfToMarkdown(buffer);
+      html = await parsePdfToHtml(buffer);
       break;
     case '.docx':
-      markdown = await parseDocxToMarkdown(buffer);
+      html = await parseDocxToHtml(buffer);
       break;
     case '.rtf':
-      markdown = await parseRtfToMarkdown(buffer);
+      html = await parseRtfToHtml(buffer);
       break;
     case '.md':
-      markdown = await parseMarkdownToMarkdown(buffer);
+      html = await parseMarkdownToHtml(buffer);
       break;
     default:
       throw new Error(`Unsupported file extension: ${extension}`);
@@ -219,7 +217,7 @@ export async function parseDocument(
 
   return {
     title: getTitleFromFileName(fileName),
-    markdown,
+    html,
     originalFileName: fileName,
     fileSize: buffer.length,
     mimeType,

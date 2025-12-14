@@ -26,18 +26,17 @@
     "hono": "^4.10.7",
     "jsdom": "^26.1.0",
     "mammoth": "^1.11.0",
+    "marked": "^17.0.1",
     "node-fetch": "^3.3.2",
     "pdfjs": "^2.5.4",
     "playwright": "^1.57.0",
     "puppeteer-core": "^24.33.0",
     "query-sense": "^1.0.0",
-    "turndown": "^7.2.2",
     "unpdf": "^1.4.0"
   },
   "devDependencies": {
     "@types/jsdom": "^27.0.0",
     "@types/node": "^20.11.17",
-    "@types/turndown": "^5.0.6",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
   }

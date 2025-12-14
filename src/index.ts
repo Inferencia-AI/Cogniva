@@ -112,13 +112,13 @@ app.post('/upload-document', async (c) => {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    // Parse document to markdown
+    // Parse document to HTML
     const parsedDoc = await parseDocument(buffer, file.name, file.type)
 
     // Create note with the parsed content
     const result = await sql`
       INSERT INTO notes (user_id, title, body) 
-      VALUES (${userId}, ${parsedDoc.title}, ${parsedDoc.markdown}) 
+      VALUES (${userId}, ${parsedDoc.title}, ${parsedDoc.html}) 
       RETURNING *
     `
 
