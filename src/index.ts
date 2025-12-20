@@ -17,7 +17,7 @@ const app = new Hono()
 app.use(
   '/*',
   cors({
-    origin: '*',                     
+    origin: ['https://cogniva.pages.dev'],                     
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],   
     allowHeaders: ['Content-Type', 'Authorization'],  
     maxAge: 600,
