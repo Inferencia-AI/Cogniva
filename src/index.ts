@@ -8,6 +8,8 @@ import { search } from './functions/search.js'
 import { uploadBase64Image } from './utils/vercelCloud.js'
 import { searchUserNotes, formatNoteSearchResponse } from './utils/noteSearch.js'
 import { validateFile, parseDocument } from './utils/documentParser.js'
+import knowledgebaseRoutes from './routes/knowledgebase.js'
+import corpusRoutes from './routes/corpus.js'
 import axios from 'axios'
 
 
@@ -22,6 +24,16 @@ app.use(
     credentials: false               
   })
 )
+
+// =============================================================================
+// Knowledgebase Routes
+// =============================================================================
+app.route('/knowledgebase', knowledgebaseRoutes)
+
+// =============================================================================
+// Corpus Routes
+// =============================================================================
+app.route('/corpus', corpusRoutes)
 
 app.get('/', (c) => {
   return c.text('Hello Hono!')

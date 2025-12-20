@@ -18,6 +18,7 @@ export function uploadBase64Image(dataUri:any, fileName:any) {
   const { buffer, mimeType } = decodeBase64DataUri(dataUri);
   return put(fileName, buffer, {
     access: 'public',
+    allowOverwrite: true,
     contentType: mimeType,
   });
 }
