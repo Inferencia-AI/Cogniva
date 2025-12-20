@@ -11,7 +11,7 @@ export async function searchDaraz({
 
   const url = new URL(BASE_URL);
   url.searchParams.set("q", keyword);
-  url.searchParams.set("page", page);
+  url.searchParams.set("page", String(page));
   url.searchParams.set("ajax", "true");
 
   const res = await fetch(url.toString(), {
@@ -29,9 +29,9 @@ export async function searchDaraz({
 
   const data = await res.json();
 
-  const items = data?.mods?.listItems ?? [];
+  const items: any[] = data?.mods?.listItems ?? [];
 
-  return items.slice(0, limit).map(item => ({
+  return items.slice(0, limit).map((item: any) => ({
     title: item.name,
     price: item.price,
     rating: item.ratingScore,

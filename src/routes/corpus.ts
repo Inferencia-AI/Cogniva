@@ -530,7 +530,7 @@ corpusRoutes.post('/query-subscribed', async (c) => {
       return c.json({ corpus: [], message: 'User is not subscribed to any knowledgebases' })
     }
     
-    const kbIds = subscribedKnowledgebases.map((kb: { id: number }) => kb.id)
+    const kbIds = subscribedKnowledgebases.map((kb: any) => kb.id)
     
     // Get approved corpus from all subscribed knowledgebases
     const corpusList = await sql`
