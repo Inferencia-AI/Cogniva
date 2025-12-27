@@ -12,6 +12,7 @@ import notesRoutes from './routes/notes.js'
 import chatRoutes from './routes/chat.js'
 import webSearchRoutes from './routes/webSearch.js'
 import contentRoutes from './routes/content.js'
+import agentRoutes from './routes/agent.js'
 
 // =============================================================================
 // App Configuration
@@ -45,6 +46,9 @@ app.route('/notes', notesRoutes)
 
 // Chat and AI interactions
 app.route('/chat', chatRoutes)
+
+// Agent routes - ReAct pattern AI with tools
+app.route('/agent', agentRoutes)
 
 // Web search endpoints
 app.route('/web-search', webSearchRoutes)

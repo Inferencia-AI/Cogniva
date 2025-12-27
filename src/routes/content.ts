@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { invokeLLM } from '../utils/ollama.js'
+import { invokeLLM } from '../utils/ollamaEnhanced.js'
 import { uploadBase64Image } from '../utils/vercelCloud.js'
 
 // =============================================================================

@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import axios from 'axios'
-import { invokeLLM } from '../utils/ollama.js'
+import { invokeLLM } from '../utils/ollamaEnhanced.js'
 import { search } from '../functions/search.js'
 
 // =============================================================================
