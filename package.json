@@ -19,6 +19,7 @@
     "axios": "^1.13.2",
     "browser": "^0.2.6",
     "cheerio": "^1.1.2",
+    "cognitive-decision": "^0.1.0",
     "dotenv": "^17.2.3",
     "duck-duck-scrape": "^2.2.7",
     "extract-json-from-string": "^1.0.1",

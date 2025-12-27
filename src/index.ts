@@ -12,6 +12,7 @@ import notesRoutes from './routes/notes.js'
 import chatRoutes from './routes/chat.js'
 import webSearchRoutes from './routes/webSearch.js'
 import contentRoutes from './routes/content.js'
+import verifyAnswerRoutes from './routes/verifyAnswer.js'
 
 // =============================================================================
 // App Configuration
@@ -51,6 +52,9 @@ app.route('/web-search', webSearchRoutes)
 
 // Content processing (scraping, images, HTML)
 app.route('/content', contentRoutes)
+
+// Verify answer / classification
+app.route('/verify-answer', verifyAnswerRoutes)
 
 // =============================================================================
 // Legacy Routes (for backward compatibility)
